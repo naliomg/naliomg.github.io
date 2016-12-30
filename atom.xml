@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Nali</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://naliomg.github.io/"/>
+  <updated>2016-12-30T03:42:19.439Z</updated>
+  <id>https://naliomg.github.io/</id>
+  
+  <author>
+    <name>Nali</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>hexo常用指令</title>
+    <link href="https://naliomg.github.io/2016/12/30/hexo%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/"/>
+    <id>https://naliomg.github.io/2016/12/30/hexo常用指令/</id>
+    <published>2016-12-30T02:02:16.000Z</published>
+    <updated>2016-12-30T03:42:19.439Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="hexo常用指令"><a href="#hexo常用指令" class="headerlink" title="hexo常用指令"></a>hexo常用指令</h2><h3 id="hexo"><a href="#hexo" class="headerlink" title="hexo"></a>hexo</h3><pre><code>npm install hexo -g #安装  
+npm update hexo -g #升级  
+hexo init #初始化
+</code></pre><h3 id="简写"><a href="#简写" class="headerlink" title="简写"></a>简写</h3><pre><code>hexo n &quot;我的博客&quot; == hexo new &quot;我的博客&quot; #新建文章
+hexo p == hexo publish
+hexo g == hexo generate#生成
+hexo s == hexo server #启动服务预览
+hexo d == hexo deploy#部署
+</code></pre><h3 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h3><pre><code>hexo server #Hexo 会监视文件变动并自动更新，您无须重启服务器。
+hexo server -s #静态模式
+hexo server -p 5000 #更改端口
+hexo server -i 192.168.1.1 #自定义 IP
+
+hexo clean #清除缓存 网页正常情况下可以忽略此条命令
+hexo g #生成静态网页
+hexo d #开始部署
+</code></pre><h3 id="监视文件变动"><a href="#监视文件变动" class="headerlink" title="监视文件变动"></a>监视文件变动</h3><pre><code>hexo generate #使用 Hexo 生成静态文件快速而且简单
+hexo generate --watch #监视文件变动
+</code></pre><h3 id="完成后部署"><a href="#完成后部署" class="headerlink" title="完成后部署"></a>完成后部署</h3><p>两个命令的作用是相同的</p>
+<pre><code>hexo generate --deploy
+hexo deploy --generate
+hexo deploy -g
+hexo server -g
+</code></pre><h3 id="草稿"><a href="#草稿" class="headerlink" title="草稿"></a>草稿</h3><pre><code>hexo publish [layout] &lt;title&gt;
+</code></pre><h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><pre><code>hexo new &quot;postName&quot; #新建文章
+hexo new page &quot;pageName&quot; #新建页面
+hexo generate #生成静态页面至public目录
+hexo server #开启预览访问端口（默认端口4000，&apos;ctrl + c&apos;关闭server）
+hexo deploy #将.deploy目录部署到GitHub
+
+hexo new [layout] &lt;title&gt;
+hexo new photo &quot;My Gallery&quot;
+hexo new &quot;Hello World&quot; --lang tw
+
+变量  描述
+layout  布局
+title   标题
+date    文件建立日期
+title: 使用Hexo搭建个人博客
+layout: post
+date: 2014-03-03 19:07:43
+comments: true
+categories: Blog
+tags: [Hexo]
+keywords: Hexo, Blog
+description: 生命在于折腾，又把博客折腾到Hexo了。给Hexo点赞。
+模版（Scaffold）
+hexo new photo &quot;My Gallery&quot;
+
+变量  描述
+layout  布局
+title   标题
+date    文件建立日期
+设置文章摘要
+以上是文章摘要 &lt;!--more--&gt; 以下是余下全文 
+写作
+hexo new page &lt;title&gt;
+hexo new post &lt;title&gt;
+
+变量  描述
+:title  标题
+:year   建立的年份（4 位数）
+:month  建立的月份（2 位数）
+:i_month    建立的月份（去掉开头的零）
+:day    建立的日期（2 位数）
+:i_day  建立的日期（去掉开头的零）
+推送到服务器上
+hexo n #写文章
+hexo g #生成
+hexo d #部署 #可与hexo g合并为 hexo d -g
+</code></pre><h3 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h3><p>1.找不到git部署<br>ERROR Deployer not found: git<br>解决方法:</p>
+<pre><code>npm install hexo-deployer-git --save
+</code></pre><p>2.部署类型设置git<br>hexo 3.0 部署类型不再是github，_config.yml 中修改</p>
+<pre><code>Deployment
+    Docs: http://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@***.github.com:***/***.github.io.git
+  branch: master
+</code></pre><p>3.xcodebuild<br>xcode-select: error: tool ‘xcodebuild’ requires Xcode, but active developer directory ‘/Library/Developer/CommandLineTools’ is a command line tools instance</p>
+<pre><code>npm install bcrypt
+</code></pre><p>4.RSS不显示<br>安装RSS插件</p>
+<pre><code>npm install hexo-generator-feed --save
+</code></pre><p>5.开启RSS功能<br>编辑hexo/_config.yml，添加如下代码：</p>
+<pre><code>rss: /atom.xml #rss地址  默认即可
+</code></pre><p>6.开启评论<br>1.我使用多说代替自带的评论，在多说 网站注册 &gt; 后台管理 &gt; 添加新站点 &gt; 工具 === 复制通用代码 里面有 short_name<br>在根目录 _config.yml 添加一行 disqus_shortname: jslite 是在多说注册时产生的<br>复制到 themes\landscape\layout_partial\article.ejs<br>把</p>
+<pre><code>&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname){ %&gt;
+&lt;section id=&quot;comments&quot;&gt;
+&lt;div id=&quot;disqus_thread&quot;&gt;
+  &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;//disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;% } %&gt;
+</code></pre><p>改为</p>
+<pre><code>&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname){ %&gt;
+  &lt;section id=&quot;comments&quot;&gt;
+    &lt;!-- 多说评论框 start --&gt;
+    &lt;div class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= post.layout %&gt;-&lt;%= post.slug %&gt;&quot; data-title=&quot;&lt;%= post.title %&gt;&quot; data-url=&quot;&lt;%= page.permalink %&gt;&quot;&gt;&lt;/div&gt;
+    &lt;!-- 多说评论框 end --&gt;
+    &lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    var duoshuoQuery = {short_name:&apos;&lt;%= config.disqus_shortname %&gt;&apos;};
+      (function() {
+        var ds = document.createElement(&apos;script&apos;);
+        ds.type = &apos;text/javascript&apos;;ds.async = true;
+        ds.src = (document.location.protocol == &apos;https:&apos; ? &apos;https:&apos; : &apos;http:&apos;) + &apos;//static.duoshuo.com/embed.js&apos;;
+        ds.charset = &apos;UTF-8&apos;;
+        (document.getElementsByTagName(&apos;head&apos;)[0] 
+         || document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(ds);
+      })();
+      &lt;/script&gt;
+    &lt;!-- 多说公共JS代码 end --&gt;
+  &lt;/section&gt;
+&lt;% } %&gt;
+</code></pre><p>文章摘自：<a href="https://segmentfault.com/a/1190000002632530" target="_blank" rel="external">https://segmentfault.com/a/1190000002632530</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;hexo常用指令&quot;&gt;&lt;a href=&quot;#hexo常用指令&quot; class=&quot;headerlink&quot; title=&quot;hexo常用指令&quot;&gt;&lt;/a&gt;hexo常用指令&lt;/h2&gt;&lt;h3 id=&quot;hexo&quot;&gt;&lt;a href=&quot;#hexo&quot; class=&quot;headerlink&quot; 
+    
+    </summary>
+    
+      <category term="工具使用" scheme="https://naliomg.github.io/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"/>
+    
+    
+      <category term="hexo" scheme="https://naliomg.github.io/tags/hexo/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MD基础语法记录</title>
+    <link href="https://naliomg.github.io/2016/12/29/MD%E5%9F%BA%E7%A1%80%E8%AF%AD%E6%B3%95%E8%AE%B0%E5%BD%95/"/>
+    <id>https://naliomg.github.io/2016/12/29/MD基础语法记录/</id>
+    <published>2016-12-29T14:42:45.000Z</published>
+    <updated>2016-12-30T03:42:48.131Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Markdown-语法的简要规则"><a href="#Markdown-语法的简要规则" class="headerlink" title="Markdown 语法的简要规则"></a>Markdown 语法的简要规则</h2><h3 id="1-标题"><a href="#1-标题" class="headerlink" title="1. 标题"></a>1. 标题</h3><p>标题是每篇文章都需要也是最常用的格式，在 Markdown 中，如果一段文字被定义为标题，只要在这段文字前加 <code>#</code> 号即可。</p>
+<pre><code># 一级标题
+## 二级标题
+### 三级标题
+</code></pre><p>以此类推，总共六级标题，建议在井号后加一个空格，这是最标准的 Markdown 语法。</p>
+<h3 id="2-列表"><a href="#2-列表" class="headerlink" title="2. 列表"></a>2. 列表</h3><p>熟悉 HTML 的同学肯定知道有序列表与无序列表的区别，在 Markdown 下，列表的显示只需要在文字前加上 <code>-</code> 或 <code>*</code> 即可变为无序列表，有序列表则直接在文字前加1. 2. 3. 符号要和文字之间加上一个字符的空格。</p>
+<pre><code>* 无序列表1
+* 无序列表2
+
+1. 有序列表1
+2. 有序列表2
+</code></pre><h3 id="3-引用"><a href="#3-引用" class="headerlink" title="3. 引用"></a>3. 引用</h3><p>如果你需要引用一小段别处的句子，那么就要用引用的格式。<br>只需要在文本前加入 <code>&gt;</code> 这种尖括号（大于号）即可。</p>
+<blockquote>
+<p>例如这样书写</p>
+</blockquote>
+<h3 id="4-图片与链接"><a href="#4-图片与链接" class="headerlink" title="4. 图片与链接"></a>4. 图片与链接</h3><p>插入链接与插入图片的语法很像，区别在一个 <code>!</code> 号：</p>
+<p>图片为：<code>![](){ImgCap}{/ImgCap}</code><br>链接为：<code>[]()</code></p>
+<p>插入图片的地址需要图床，这里推荐围脖图床修复计划 与 CloudApp 的服务，生成URL地址即可。</p>
+<h3 id="5-粗体与斜体"><a href="#5-粗体与斜体" class="headerlink" title="5. 粗体与斜体"></a>5. 粗体与斜体</h3><p>Markdown 的粗体和斜体也非常简单，用两个 <code>*</code> 包含一段文本就是粗体的语法，用一个 <code>*</code> 包含一段文本就是斜体的语法。</p>
+<p>例如：<strong>这里是粗体</strong>　<em>这里是斜体</em></p>
+<h3 id="6-表格"><a href="#6-表格" class="headerlink" title="6. 表格"></a>6. 表格</h3><p>表格是我觉得 Markdown 比较累人的地方，例子如下：</p>
+<pre><code>| Tables        | Are           | Cool  |  \\表头
+| ------------- |:-------------:| -----:|  \\表头与主体的分隔，定义对齐方式
+| col 3 is      | right-aligned | $1600 |  \\对齐默认为左对齐
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+</code></pre><p>这种语法生成的表格如下：</p>
+<table>
+<thead>
+<tr>
+<th>Tables</th>
+<th style="text-align:center">Are</th>
+<th style="text-align:right">Cool</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>col 3 is</td>
+<td style="text-align:center">right-aligned</td>
+<td style="text-align:right">$1600</td>
+</tr>
+<tr>
+<td>col 2 is</td>
+<td style="text-align:center">centered</td>
+<td style="text-align:right">$12</td>
+</tr>
+<tr>
+<td>zebra stripes</td>
+<td style="text-align:center">are neat</td>
+<td style="text-align:right">$1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="7-代码框"><a href="#7-代码框" class="headerlink" title="7. 代码框"></a>7. 代码框</h3><p>如果你是个程序猿，需要在文章里优雅的引用代码框，在 Markdown下实现也非常简单，若要实现行间代码，只需要用两个 ` 把中间的代码包裹起来；若需要使用代码块，使用 tab 键缩进即可。</p>
+<p><code>var a = 9;  \\这里就是行间代码</code></p>
+<pre><code>var a = 9;  \\这里就是代码块
+</code></pre><h3 id="8-分割线"><a href="#8-分割线" class="headerlink" title="8. 分割线"></a>8. 分割线</h3><p>分割线的语法只需要三个 <code>*</code> 号，效果如下：</p>
+<hr>
+<p>以上就是 Markdown 的基本使用方法，官方说明可参见：<a href="http://www.appinn.com/markdown/" target="_blank" rel="external">http://www.appinn.com/markdown/</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Markdown-语法的简要规则&quot;&gt;&lt;a href=&quot;#Markdown-语法的简要规则&quot; class=&quot;headerlink&quot; title=&quot;Markdown 语法的简要规则&quot;&gt;&lt;/a&gt;Markdown 语法的简要规则&lt;/h2&gt;&lt;h3 id=&quot;1-标题&quot;&gt;&lt;a 
+    
+    </summary>
+    
+      <category term="语言" scheme="https://naliomg.github.io/categories/%E8%AF%AD%E8%A8%80/"/>
+    
+    
+      <category term="MD" scheme="https://naliomg.github.io/tags/MD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>blog</title>
+    <link href="https://naliomg.github.io/2016/12/29/blog/"/>
+    <id>https://naliomg.github.io/2016/12/29/blog/</id>
+    <published>2016-12-29T13:50:50.000Z</published>
+    <updated>2016-12-30T03:41:46.479Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="我的第一个博客开始了！"><a href="#我的第一个博客开始了！" class="headerlink" title="我的第一个博客开始了！"></a>我的第一个博客开始了！</h2><p>本博客暂时主要用于学习记录用，记录下一些容易忘的、觉得新奇的、抑或是没来得及看的一些文章。<br>那么，开始吧！</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;我的第一个博客开始了！&quot;&gt;&lt;a href=&quot;#我的第一个博客开始了！&quot; class=&quot;headerlink&quot; title=&quot;我的第一个博客开始了！&quot;&gt;&lt;/a&gt;我的第一个博客开始了！&lt;/h2&gt;&lt;p&gt;本博客暂时主要用于学习记录用，记录下一些容易忘的、觉得新奇的、抑或是
+    
+    </summary>
+    
+      <category term="个人日志" scheme="https://naliomg.github.io/categories/%E4%B8%AA%E4%BA%BA%E6%97%A5%E5%BF%97/"/>
+    
+    
+      <category term="personal" scheme="https://naliomg.github.io/tags/personal/"/>
+    
+  </entry>
+  
+</feed>
