@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>soket.io使用 | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">soket.io使用</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">soket.io使用</h1><div class="post-meta"><a href="/2017/08/08/soket-io使用/#comments" class="comment-count"></a><p><span class="date">Aug 08, 2017</span></p></div><div class="post-content"><h1 id="soket-io的常用接口"><a href="#soket-io的常用接口" class="headerlink" title="soket-io的常用接口"></a>soket-io的常用接口</h1><p>webdoket是基于TCP的一种新的网络协议。它实现了浏览器与服务器全双工(full-duplex)通信——允许服务器主动发送信息给客户端。</p>
+<p>此文介绍一些 soket.io 的基本使用。<br>主页：<a href="https://socket.io/" target="_blank" rel="noopener">https://socket.io/</a></p>
+<h2 id="1-node-express-soket-io系统搭建"><a href="#1-node-express-soket-io系统搭建" class="headerlink" title="1. node + express + soket.io系统搭建"></a>1. node + express + soket.io系统搭建</h2><p>服务器端：<br>安装：<code>npm install --save socket.io</code></p>
+<p>将soket服务绑到 server 上；</p>
+<pre><code>// www文件
+var io = require(&apos;../routes/websoket.js&apos;);
+io.attach(server);
+
+//独立的websoket文件
+var io = require(&apos;socket.io&apos;)();
+var request = require(&apos;request&apos;);
+io.on(&apos;connection&apos;, function(socket) {
+    console.log(&apos;a user connected&apos;);
+    socket.emit(&apos;msg&apos;, { msg: &apos;我是智能闲聊高手，放马过来吧!&apos; });
+    socket.on(&apos;msg&apos;, function(obj) {
+        // 接入图灵机器人,此处用图灵机器人实现了一个对话功能。
+        request({
+            url: &apos;http://www.tuling123.com/openapi/api&apos;,
+            method: &quot;POST&quot;,
+            json: true,
+            form: {
+                &apos;key&apos;: &apos;1a6e7a453c1645ee8739f592ef05465e&apos;,
+                &apos;info&apos;: obj.msg,
+                &apos;userid&apos;: &apos;naliomg&apos;
+            }
+        }, function(err, resp, body) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (body.code == 100000) {
+                socket.emit(&apos;msg&apos;, {msg: body.text});
+            }else if(body.code == 200000) {
+                socket.emit(&apos;msg&apos;, {msg: body.text+&apos;，&lt;a href=&quot;&apos;+body.url+&apos;&quot;&gt;点这里&lt;/a&gt;&apos;});
+            }
+        });
+    });
+});
+module.exports = io;
+</code></pre><p>客户端：<br>客户端需要引入soket.io的js文件，<br>cdn: <a href="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js" target="_blank" rel="noopener">https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js</a></p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0&quot; /&gt;
+    &lt;title&gt;websoket&lt;/title&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        .clearfix{
+            zoom: 1;
+        }
+        .clearfix:after{
+            content: &apos;&apos;;
+            display:block;
+            width: 0;
+            height: 0;
+            font-size: 0;
+            visibility: hidden;
+            clear: both;
+        }
+        .pull-l{
+            float: left;
+        }
+        .pull-r{
+            float: right;
+        }
+        .container{
+            padding: 10px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        .msg-wrap{
+            width: 300px;
+            height: 400px;
+            margin: 10px auto;
+            border: 3px solid #ddd;
+            overflow: auto;
+        }
+        .controll-btn{
+            width: 300px
+        }
+        #sendMsg{
+            width: 220px;
+            height: 40px;
+            color: #aaa;
+            box-sizing: border-box;
+        }
+        #send{
+            height: 40px;
+        }
+    &lt;/style&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;/utils/jquery/jquery-1.10.2.min.js&quot;&gt;&lt;/script&gt;
+    &lt;script type=&quot;text/javascript&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;msg-wrap container&quot; id=&quot;log&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;controll-btn container clearfix&quot;&gt;
+        &lt;input id=&quot;sendMsg&quot; class=&quot;pull-l&quot; type=&quot;text&quot; placeholder=&quot;请输入内容&quot;&gt;&lt;/input&gt;
+        &lt;input id=&quot;send&quot; class=&quot;pull-r&quot; type=&quot;button&quot; value=&quot;发送&quot;&gt;&lt;/input&gt;
+    &lt;/div&gt;
+    &lt;script&gt;
+        $(function(){
+            var socket = io(&apos;http://naliomg.site&apos;);
+            socket.on(&apos;msg&apos;, function(resp){
+                $(&apos;#log&apos;).append(&apos;&lt;p class=&quot;clearfix&quot;&gt;&lt;span class=&quot;pull-l&quot;&gt;&apos;+resp.msg+&apos;&lt;/span&gt;&lt;/p&gt;&apos;);
+                $(&apos;#log&apos;).scrollTop( $(&apos;#log&apos;)[0].scrollHeight );
+            });
+            $(&apos;#send&apos;).on(&apos;click&apos;, function(){
+                var msg = $(&apos;#sendMsg&apos;).val();
+                if (msg.trim()==&apos;&apos;) {
+                    alert(&apos;消息不能为空~&apos;);
+                    return;
+                }
+                socket.emit(&apos;msg&apos;, {msg: msg});
+                $(&apos;#log&apos;).append(&apos;&lt;p class=&quot;clearfix&quot;&gt;&lt;span class=&quot;pull-r&quot;&gt;&apos;+msg+&apos;&lt;/span&gt;&lt;/p&gt;&apos;);
+                $(&apos;#sendMsg&apos;).val(&apos;&apos;);
+                $(&apos;#log&apos;).scrollTop( $(&apos;#log&apos;)[0].scrollHeight );
+            });
+            $(&apos;#otherConnect&apos;).on(&apos;click&apos;, function(){
+                var nameSoket = io(&apos;/test&apos;);
+            });
+        })
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><h2 id="2-服务器端常用API"><a href="#2-服务器端常用API" class="headerlink" title="2. 服务器端常用API"></a>2. 服务器端常用API</h2><pre><code>//监听客户端连接,回调函数会传递本次连接的socket
+io.on(&apos;connection&apos;,function(socket){ 
+    //监听客户端发送的信息
+    socket.on(&apos;event&apos;,function(data){});
+    //给该socket的客户端发送消息
+    socket.emit(&apos;event&apos;, data);
+    //给除了自己以外的客户端广播消息
+    socket.broadcast.emit(&quot;msg&quot;,{data:&quot;hello,everyone&quot;}); 
+    //分组
+    socket.on(&apos;group1&apos;, function (data) {
+        socket.join(&apos;group1&apos;);
+    });
+    socket.on(&apos;group2&apos;,function(data){
+        socket.join(&apos;group2&apos;);
+    });
+    //一个客户端可以存在多个分组（订阅模式）
+    socket.emit(&apos;group1&apos;); //就可以加入group1分组；
+    socket.emit(&apos;group2&apos;); //就可以加入group2分组；
+    socket.leave(data.room); //退出分组
+    //对分组中的用户发送信息，不包括自己
+    socket.broadcast.to(&apos;group1&apos;).emit(&apos;event_name&apos;, data); 
+});    
+//给所有客户端广播消息
+io.sockets.emit(&apos;event&apos;,data); 
+//给指定的客户端发送消息
+io.sockets.socket(socketid).emit(&apos;event&apos;, data);
+//对分组中的用户发送信息，不包括自己
+io.sockets.in(&apos;group1&apos;).emit(&apos;event_name&apos;, data);
+//获取连接的客户端socket
+io.sockets.clients().forEach(function (socket) {
+    //.....
+});
+//获取分组信息
+//获取所有房间（分组）信息
+io.sockets.manager.rooms;
+//来获取此socketid进入的房间信息
+io.sockets.manager.roomClients[socket.id];
+//获取particular room中的客户端，返回所有在此房间的socket实例
+io.sockets.clients(&apos;particular room&apos;);
+//另一种分组方式
+io.of(&apos;/some&apos;).on(&apos;connection&apos;, function (socket) {
+    socket.on(&apos;test&apos;, function (data) {
+        socket.broadcast.emit(&apos;event_name&apos;,{});
+    });
+});
+</code></pre><h2 id="3-客户端常用API"><a href="#3-客户端常用API" class="headerlink" title="3. 客户端常用API"></a>3. 客户端常用API</h2><pre><code>//建立一个socket连接
+var socket = io(&quot;ws://103.31.201.154:5555&quot;);
+//监听服务消息
+socket.on(&apos;msg&apos;,function(data){
+    socket.emit(&apos;msg&apos;, {rp:&quot;fine,thank you&quot;}); //向服务器发送消息
+    console.log(data);
+});
+//监听socket断开与重连。
+socket.on(&apos;disconnect&apos;, function() {
+    console.log(&quot;与服务其断开&quot;);
+});
+socket.on(&apos;reconnect&apos;, function() {
+    console.log(&quot;重新连接到服务器&quot;);
+});
+</code></pre><p>客户端socket.on()监听的事件：<br>connect：连接成功<br>connecting：正在连接<br>disconnect：断开连接<br>connect_failed：连接失败<br>error：错误发生，并且无法被其他事件类型所处理<br>message：同服务器端message事件<br>anything：同服务器端anything事件<br>reconnect_failed：重连失败<br>reconnect：成功重连<br>reconnecting：正在重连</p>
+<p>当第一次连接时，事件触发顺序为：connecting-&gt;connect；当失去连接时，事件触发顺序 为：disconnect-&gt;reconnecting（可能进行多 次）-&gt;connecting-&gt;reconnect-&gt;connect。</p>
+<p>THE END!</p>
+</div><div class="tags"><a href="/tags/js/">js</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2017/08/28/vuex使用小计/" class="pre">vuex使用小计</a><a href="/2017/08/01/ngrok搭建外网可以访问的本地服务器/" class="next">ngrok搭建外网可以访问的本地服务器</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#soket-io的常用接口"><span class="toc-text">soket-io的常用接口</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-node-express-soket-io系统搭建"><span class="toc-text">1. node + express + soket.io系统搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-服务器端常用API"><span class="toc-text">2. 服务器端常用API</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-客户端常用API"><span class="toc-text">3. 客户端常用API</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/kue任务队列使用/">kue任务队列使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/redis-cli指令/">redis-cli指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/node将json转换为excel/">node将json转换为excel</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/09/co模块异步书写/">co模块异步书写</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/09/发布订阅模式的事件BUS/">发布订阅模式的事件BUS</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/策略模式文本校验/">策略模式文本校验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/27/stylus语法简介/">stylus语法简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/chrome中圆角遮盖不住transform动画导致子元素溢出/">chrome中圆角遮盖不住transform动画导致子元素溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/28/vuex使用小计/">vuex使用小计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/soket-io使用/">soket.io使用</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>

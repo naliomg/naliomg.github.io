@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>node+ueditor+qn+atjs编辑器搭建 | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">node+ueditor+qn+atjs编辑器搭建</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">node+ueditor+qn+atjs编辑器搭建</h1><div class="post-meta"><a href="/2017/08/01/node-ueditor-qn-atjs编辑器搭建/#comments" class="comment-count"></a><p><span class="date">Aug 01, 2017</span></p></div><div class="post-content"><h1 id="nodejs-ueditor-qn-at-js-构建富文本编辑器图片文件上传及-功能"><a href="#nodejs-ueditor-qn-at-js-构建富文本编辑器图片文件上传及-功能" class="headerlink" title="nodejs + ueditor + qn + at.js 构建富文本编辑器图片文件上传及@功能"></a>nodejs + ueditor + qn + at.js 构建富文本编辑器图片文件上传及@功能</h1><h2 id="1-ueditor"><a href="#1-ueditor" class="headerlink" title="1. ueditor"></a>1. ueditor</h2><p>ueditor为百度前端团队开发的一款功能强大的富文本编辑器，使用也比较方便。 </p>
+<p>其主页为：<a href="http://ueditor.baidu.com/website/" target="_blank" rel="noopener">http://ueditor.baidu.com/website/</a></p>
+<p>使用时必须引入的文件有：<br>ueditor.css<br>ueditor.config.js<br>ueditor.all.js<br>后端需要使用ueditor.config.json;<br>ueditor.config.js的具体配置请查看官网api；<br>后台为node或者php的话，下载php版本即可  </p>
+<p>基本使用：</p>
+<pre><code>// html，可以为script标签，也可以为textarea标签
+&lt;script id=&quot;container&quot; name=&quot;content&quot; type=&quot;text/plain&quot;&gt;需要初始化的数据&lt;/script&gt;
+&lt;!-- &lt;textarea id=&quot;container&quot;&gt;需要初始化的数据&lt;/textarea&gt; --&gt;
+
+// js实例化即可，可以传一个json参数作为初始化的使用定制
+var ue = UE.getEditor(&apos;container&apos;);
+</code></pre><h2 id="2-七牛文件上传"><a href="#2-七牛文件上传" class="headerlink" title="2. 七牛文件上传"></a>2. 七牛文件上传</h2><p>搭配nodejs使用七牛，此处并没有使用七牛官方提供 js sdk ，而是使用的 node-ueditor 的一款针对ueditor的插件。实现图片文件的上传与管理。</p>
+<p>安装: <code>npm install ueditor --save</code></p>
+<p>使用: </p>
+<pre><code>// 此为没有使用7牛存储，将上传的图片存储到自己服务器的情况
+var bodyParser = require(&apos;body-parser&apos;)
+var ueditor = require(&quot;ueditor&quot;)
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json());
+app.use(&quot;/ueditor/ue&quot;, ueditor(path.join(__dirname, &apos;public&apos;), function(req, res, next) {
+  // ueditor 客户发起上传图片请求
+  if(req.query.action === &apos;uploadimage&apos;){
+    var foo = req.ueditor;
+    var date = new Date();
+    var imgname = req.ueditor.filename;
+    var img_url = &apos;/images/ueditor/&apos;;
+    res.ue_up(img_url); //你只要输入要保存的地址 。保存操作交给ueditor来做
+  }
+  //  客户端发起图片列表请求
+  else if (req.query.action === &apos;listimage&apos;){
+    var dir_url = &apos;/images/ueditor/&apos;;
+    res.ue_list(dir_url);  // 客户端会列出 dir_url 目录下的所有图片
+  }
+  // 客户端发起其它请求
+  else {
+    res.setHeader(&apos;Content-Type&apos;, &apos;application/json&apos;);
+    res.redirect(&apos;/ueditor/ueditor.config.json&apos;)  // ueditor初始化时会向设置的/ueditor/ue路由发起请求，需要返回ueditor.config.json
+}}));
+
+// qn存储
+var bodyParser = require(&apos;body-parser&apos;)
+var ueditor = require(&quot;ueditor&quot;)
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json());
+// 支持七牛上传，如有需要请配置好qn参数，如果没有qn参数则存储在本地
+app.use(&quot;/ueditor/ue&quot;, ueditor(path.join(__dirname, &apos;public&apos;), {
+    qn: {
+        accessKey: &apos;your access key&apos;,             // qn accessKey
+        secretKey: &apos;your secret key&apos;,             // qn secretKey
+        bucket: &apos;your bucket name&apos;,               // qn bucket
+        origin: &apos;http://{bucket}.u.qiniudn.com&apos;,  // 这个地址是qn返回的图片地址域，使用融合cdn或者qn提供的测试域
+        uploadURL: &apos;http://up-z2.qiniu.com&apos;       // qn上传接口地址，这个为华南
+    }
+}, function(req, res, next) {
+  // ueditor 客户发起上传图片请求，如果没有配置qn参数，则会上传到本地服务器；就会走下面的存储。
+  var imgDir = &apos;/img/ueditor/&apos;
+  if(req.query.action === &apos;uploadimage&apos;){
+    var foo = req.ueditor;
+    var imgname = req.ueditor.filename;        
+    res.ue_up(imgDir); //你只要输入要保存的地址 。保存操作交给ueditor来做
+  }
+  //  客户端发起图片列表请求
+  else if (req.query.action === &apos;listimage&apos;){        
+    res.ue_list(imgDir);  // 客户端会列出 dir_url 目录下的所有图片
+  }
+  // 客户端发起其它请求
+  else {
+    res.setHeader(&apos;Content-Type&apos;, &apos;application/json&apos;);
+    res.redirect(&apos;/ueditor/ueditor.config.json&apos;)
+}}));
+
+// 多文件类型存储
+var bodyParser = require(&apos;body-parser&apos;)
+var ueditor = require(&quot;ueditor&quot;)
+app.use(bodyParser.urlencoded({
+  extended: true
+}))
+app.use(bodyParser.json());
+app.use(&quot;/ueditor/ue&quot;, ueditor(path.join(__dirname, &apos;public&apos;), function(req, res, next) {
+  var imgDir = &apos;/img/ueditor/&apos; //默认上传地址为图片
+  var ActionType = req.query.action;
+    if (ActionType === &apos;uploadimage&apos; || ActionType === &apos;uploadfile&apos; || ActionType === &apos;uploadvideo&apos;) {
+        var file_url = imgDir;//默认上传地址为图片
+        /*其他上传格式的地址*/
+        if (ActionType === &apos;uploadfile&apos;) {
+            file_url = &apos;/file/ueditor/&apos;; //附件保存地址
+        }
+        if (ActionType === &apos;uploadvideo&apos;) {
+            file_url = &apos;/video/ueditor/&apos;; //视频保存地址
+        }
+        res.ue_up(file_url); //你只要输入要保存的地址 。保存操作交给ueditor来做
+        res.setHeader(&apos;Content-Type&apos;, &apos;text/html&apos;);
+    }
+  //客户端发起图片列表请求
+  else if (ActionType === &apos;listimage&apos;){        
+    res.ue_list(imgDir);  // 客户端会列出 dir_url 目录下的所有图片
+  }
+  // 客户端发起其它请求
+  else {
+    res.setHeader(&apos;Content-Type&apos;, &apos;application/json&apos;);
+    res.redirect(&apos;/ueditor/ueditor.config.json&apos;)
+}}));
+</code></pre><p>其实这个插件已经不止用于搭配ueditor了，所有图片及文件的上传基本都可以使用了，不过对数据的处理比较死，没有更多的对上传文件进行加工。</p>
+<h2 id="3-at-js"><a href="#3-at-js" class="headerlink" title="3. at.js"></a>3. at.js</h2><p>用at.js实现 ‘@’ 书写功能。</p>
+<p>github地址：<a href="https://github.com/ichord/At.js" target="_blank" rel="noopener">https://github.com/ichord/At.js</a></p>
+<p>必须要引入的文件：<br>jquery.atwho.css<br>jquery.min.js<br>jquery.caret.js<br>jquery.atwho-2.js  </p>
+<p>一定要注意at的版本，1.0以下好像与ueditor不兼容，@功能会有问题。</p>
+<p>使用：</p>
+<pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+var ue = UE.getEditor(&apos;container&apos;);
+$(function(){
+    var at_config = {
+        at: &quot;@&quot;,
+        data:[&apos;Peter&apos;, &apos;Tom&apos;, &apos;Anne&apos;, &apos;zhangsan&apos;, &apos;lisi&apos;],
+        limit: 20
+    }
+    var ue = UE.getEditor(&apos;container&apos;,{
+        autoClearinitialContent:true,
+        //关闭字数统计
+        wordCount:false,
+        //关闭elementPath
+        elementPathEnabled:false,
+    });
+    ue.addListener(&apos;ready&apos;, function(editor){
+        $(this.document.body).atwho(at_config);
+    });
+});
+&lt;/script&gt;
+</code></pre><p>以上3个插件就实现了富文本编辑器的常见使用功能，是不是比自己写方便多了呢~</p>
+<p>THE END！</p>
+</div><div class="tags"><a href="/tags/js/">js</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2017/08/01/ngrok搭建外网可以访问的本地服务器/" class="pre">ngrok搭建外网可以访问的本地服务器</a><a href="/2017/07/14/判断浏览器是否是移动设备/" class="next">判断浏览器是否是移动设备</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#nodejs-ueditor-qn-at-js-构建富文本编辑器图片文件上传及-功能"><span class="toc-text">nodejs + ueditor + qn + at.js 构建富文本编辑器图片文件上传及@功能</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-ueditor"><span class="toc-text">1. ueditor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-七牛文件上传"><span class="toc-text">2. 七牛文件上传</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-at-js"><span class="toc-text">3. at.js</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/kue任务队列使用/">kue任务队列使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/redis-cli指令/">redis-cli指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/node将json转换为excel/">node将json转换为excel</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/09/co模块异步书写/">co模块异步书写</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/09/发布订阅模式的事件BUS/">发布订阅模式的事件BUS</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/策略模式文本校验/">策略模式文本校验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/27/stylus语法简介/">stylus语法简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/chrome中圆角遮盖不住transform动画导致子元素溢出/">chrome中圆角遮盖不住transform动画导致子元素溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/28/vuex使用小计/">vuex使用小计</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/soket-io使用/">soket.io使用</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>
