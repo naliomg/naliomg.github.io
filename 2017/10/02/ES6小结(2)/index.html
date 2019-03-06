@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>ES6小记(2) | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">ES6小记(2)</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">ES6小记(2)</h1><div class="post-meta"><a href="/2017/10/02/ES6小结(2)/#comments" class="comment-count"></a><p><span class="date">Oct 02, 2017</span></p></div><div class="post-content"><h2 id="ES6小计-2"><a href="#ES6小计-2" class="headerlink" title="ES6小计(2)"></a>ES6小计(2)</h2><h3 id="7-函数的扩展"><a href="#7-函数的扩展" class="headerlink" title="7. 函数的扩展"></a>7. 函数的扩展</h3><h4 id="7-1-参数的默认值"><a href="#7-1-参数的默认值" class="headerlink" title="7.1 参数的默认值"></a>7.1 参数的默认值</h4><p>函数定义时，可以直接用等于为参数设定默认值。传参全等于<code>undefined</code>的时候，默认值有效。参数默认值与解构赋值同时使用时，参数默认值先有效，其次再进行解构赋值。<br>函数添加了<code>length</code>属性，表示函数参数总个数-已设定默认值的参数个数。</p>
+<pre><code>function log(x, y = &apos;Y&apos;) { console.log(x, y) }
+log(&apos;X&apos;) // XY
+(function(a, b, c = 5) {}).length // 2
+</code></pre><p>函数的变量初始化的作用域不属于函数内部，而在函数外层。</p>
+<pre><code>let x = 1
+function f(y = x) {
+    let x = 2
+    console.log(y)
+}
+f() // 1
+</code></pre><h4 id="7-2-rest参数"><a href="#7-2-rest参数" class="headerlink" title="7.2 rest参数"></a>7.2 <code>rest</code>参数</h4><p>函数传参时，可以使用<code>...变量名</code>的方式定义函数参数，变量名为一个传参组成的数组。<code>rest</code>参数后不能再有参数。</p>
+<pre><code>function f(...arr) {
+    console.log(arr)
+}
+f(1, 2, 3) // [1, 2, 3]
+</code></pre><h4 id="7-3-扩展运算符"><a href="#7-3-扩展运算符" class="headerlink" title="7.3 ...扩展运算符"></a>7.3 <code>...</code>扩展运算符</h4><p>类似于<code>rest参数</code>的逆运算。将数组返还为多个项目参数。</p>
+<pre><code>console.log(...[1, 2, 3]) // 1 2 3
+</code></pre><p>常有以下使用方法：</p>
+<p>7.3.1 不定参数个数的传参。</p>
+<pre><code>let ag = [&apos;name1&apos;, 1, &apos;name2&apos;, 2, &apos;name3&apos;, 3]
+redis.client.hmset(&apos;key&apos;, ...ag, function(err, data) {}) // 简化传参的书写，此句等同于下句
+redis.client.hmset(&apos;key&apos;, &apos;name1&apos;, 1, &apos;name2&apos;, 2, &apos;name3&apos;, 3, function(err, data) {})
+</code></pre><p>7.3.2 数据合并</p>
+<pre><code>let arr1 = [1, 2, 3]
+let arr2 = [4, 5, 6]
+arr1.push(...arr2) // arr1 = [1, 2, 3, 4, 5, 6]
+arr1.concat(arr2)
+[...arr1, ...arr2]
+</code></pre><p>7.3.3 字符串转数组</p>
+<pre><code>[...&apos;hello&apos;] // [&apos;h&apos;, &apos;e&apos;, &apos;l&apos;, &apos;l&apos;, &apos;o&apos;] 可识别UTF-16，依据数组长度，可有效判断字符串长度
+</code></pre><p>7.3.4 类数组对象转换为真数组</p>
+<pre><code>[].slice.call(arrLike)
+Array.from(arrLike)
+[...arrLike]
+</code></pre><h4 id="7-4-箭头函数"><a href="#7-4-箭头函数" class="headerlink" title="7.4 箭头函数"></a>7.4 箭头函数</h4><p>用箭头<code>=&gt;</code>定义的函数。</p>
+<pre><code>var f = v =&gt; v // 等同于如下：
+var f = function(v) {
+    return v
+}
+
+var sum = (num1, num2) =&gt; { return num1 + num2 }
+</code></pre><p>箭头函数仅仅是简化了函数定义的书写，并没有新增多少实际有用的功能。为了便于阅读，建议箭头函数的参数部分的<code>()</code>不要省略。<br>箭头函数与普通函数的区别有以下四点：</p>
+<ol>
+<li>箭头函数的<code>this</code>指向定义时所在对象，不是使用时所在对象；也可以说是箭头函数没有自己的<code>this</code>对象，在其内使用<code>this</code>其实是查找到外层的<code>this</code>；</li>
+<li>不能使用<code>new</code>，不可当做构造函数；</li>
+<li>不能使用<code>arguments</code>对象，但可以使用rest参数；箭头函数没有自己的<code>arguments</code>参数；</li>
+<li>不可使用<code>yield</code>命令。</li>
+</ol>
+<h4 id="7-5-尾调用优化与尾递归优化"><a href="#7-5-尾调用优化与尾递归优化" class="headerlink" title="7.5 尾调用优化与尾递归优化"></a>7.5 尾调用优化与尾递归优化</h4><p>函数尾调用时，不需要用到上层函数的环境时，使用尾调用就会不将上层环境保留在内存中，从而节省内存。尾递归同理。但是，只有开启严格模式，尾调用优化才会生效。</p>
+<h3 id="8-对象的扩展"><a href="#8-对象的扩展" class="headerlink" title="8. 对象的扩展"></a>8. 对象的扩展</h3><h4 id="8-1-对象属性与方法名的简洁缩写"><a href="#8-1-对象属性与方法名的简洁缩写" class="headerlink" title="8.1 对象属性与方法名的简洁缩写"></a>8.1 对象属性与方法名的简洁缩写</h4><p>es6允许在对象中只写属性名，不写属性值。这时，属性值等于属性名所代表的变量。</p>
+<pre><code>let x = 1, y = 2
+let obj = {x, y} // let obj = {x: 1, y: 2}
+let objF = {
+    testFunc(x) {
+        return x
+    }
+}
+</code></pre><h4 id="8-2-属性名可用表达式定义"><a href="#8-2-属性名可用表达式定义" class="headerlink" title="8.2 属性名可用表达式定义"></a>8.2 属性名可用表达式定义</h4><p>用表达式作为属性名时，表达式要放在<code>[]</code>内。属性名表达式与简洁表示法不能同时使用，否则会报错。</p>
+<pre><code>obj[&apos;a&apos; + &apos;b&apos;] = 123
+obj = {
+    abc: 123,
+    [&apos;a&apos; + &apos;b&apos;]: 321
+}
+var foo = &apos;bar&apos;
+var baz = { [foo] } // error
+var baz = { [foo]: &apos;abc&apos; } // {bar: &apos;abc&apos;}
+</code></pre><h4 id="8-3-Object-is"><a href="#8-3-Object-is" class="headerlink" title="8.3 Object.is()"></a>8.3 <code>Object.is()</code></h4><p><code>Object.is()</code>用来比较两个值是否严格相等，类似于<code>===</code>，但有以下两点不同：</p>
+<pre><code>+0 === -0 // true
+NaN === NaN // false
+Object.is(+0, -0) // false
+Object.is(NaN, NaN) // true
+</code></pre><h4 id="8-4-Object-assign"><a href="#8-4-Object-assign" class="headerlink" title="8.4 Object.assign()"></a>8.4 <code>Object.assign()</code></h4><p><code>Object.assign(目标obj, 源obj1, 源obj2...)</code>，将源obj的可枚举属性复制到目标obj上，靠后的源obj属性会覆盖靠前的源obj的同名属性。继承的属性不会复制。该复制只是浅复制，只会复制当前层。</p>
+<pre><code>var target = {a: 1, b: 1}, source1 = {b: 2, c: 2}, source2 = {c: 3}
+Object.assign(target, source1, source2)
+target // {a: 1, b: 2, c: 3}
+</code></pre><p>常用的应用有：克隆对象、合并多个对象、为属性指定默认值</p>
+<h4 id="8-5-属性的可枚举性"><a href="#8-5-属性的可枚举性" class="headerlink" title="8.5 属性的可枚举性"></a>8.5 属性的可枚举性</h4><p>遍历对象属性时，注意使用的遍历方法与可遍历属性的关系。<br><code>for...in</code>遍历时，会遍历继承属性，不会遍历不可枚举属性。<br><code>Object.keys()</code>返回自身可枚举属性组成的数组。<br><code>JSON.stringify()</code>只字符串化自身可枚举属性。<br><code>Object.assign()</code>只复制自身可枚举属性。<br><code>Reflect.enumerate()</code>返回<code>for...in</code>会遍历的属性组成的数组。<br>故，循环遍历时，为了避免继承上的属性，建议用<code>Object.keys()</code>获取属性名后再循环属性名数组进行遍历。</p>
+<h3 id="9-Symbol"><a href="#9-Symbol" class="headerlink" title="9. Symbol"></a>9. <code>Symbol</code></h3><p><code>Symbol</code>是一个新的原始数据类型，表示独一无二的值。成为第七种数据类型：undefined、null、boolean、string、number、object、symbol。<code>Symbol</code>就是一个类似于不会重复的字符串。</p>
+<h4 id="9-1-Symbol类型的创建"><a href="#9-1-Symbol类型的创建" class="headerlink" title="9.1 Symbol类型的创建"></a>9.1 <code>Symbol</code>类型的创建</h4><p><code>Symbol</code>类型不是对象，不能用<code>new</code>方式创建。创建函数为<code>Symbol(str)</code>，创建时，可以传入一个字符串参数，用来描述该<code>Symbol</code>值。<code>Symbol</code>值不能与其余类型值进行运算，但可以显示转换为字符串和布尔值。</p>
+<pre><code>let s1 = Symbol(&apos;s1&apos;)
+let s2 = Symbol(&apos;s1&apos;)
+let s3 = Symbol(&apos;s3&apos;)
+
+s1 === s2 // false
+console.log(s1) // Symbol(s1)
+console.log(String(s1)) // Symbol(s1)
+console.log(s1.toString()) // Symbol(s1)
+console.log(Boolean(s1)) // true
+</code></pre><h4 id="9-2-Symbol作为属性名"><a href="#9-2-Symbol作为属性名" class="headerlink" title="9.2 Symbol作为属性名"></a>9.2 <code>Symbol</code>作为属性名</h4><p><code>Symbol</code>作为属性名时，不能用<code>.</code>运算符，只能用<code>[]</code>变量传值。</p>
+<pre><code>let s1 = Symbol()
+a[s1] = 123
+var a = {}
+a = {
+    [s1]: 123
+}
+Object.defineProperty(a, s1, {value: 123})
+</code></pre><h4 id="9-3-对象Symbol属性的遍历"><a href="#9-3-对象Symbol属性的遍历" class="headerlink" title="9.3 对象Symbol属性的遍历"></a>9.3 对象<code>Symbol</code>属性的遍历</h4><p><code>Symbol</code>作为属性名时，不会被<code>for...in</code>、<code>for...of</code>循环遍历到，也不会被<code>Object.keys()</code>、<code>Object.getOwnPropertyNames()</code>返回。可以通过<code>Object.getOwnPropertySymbols()</code>通过数组返回。因此，可以为对象定义一些非私有，但只希望用于内部的方法。</p>
+<h4 id="9-4-Symbol-for-和Symbol-keyFor"><a href="#9-4-Symbol-for-和Symbol-keyFor" class="headerlink" title="9.4 Symbol.for()和Symbol.keyFor()"></a>9.4 <code>Symbol.for()</code>和<code>Symbol.keyFor()</code></h4><p>当需要使用同一个<code>Symbol</code>值时，除了通过变量传参以外，还可以通过<code>Symbol.for()</code>获取。<code>Symbol.for()</code>的机制是检索全局中是否有注册该描述的<code>Symbol</code>值，若有，则返回该值；若没有，则注册后返回该值。<code>Symbol.keyFor()</code>则是通过<code>Symbol</code>值，获取注册描述。<code>Symbol()</code>创建的<code>Symbol</code>值不会进行注册。</p>
+<pre><code>Symbol.for(&apos;desc&apos;) === Symbol.for(&apos;desc&apos;) // true
+Symbol(&apos;desc&apos;) === Symbol.for(&apos;desc&apos;) // false
+let s1 = Symbol.for(&apos;desc&apos;)
+let s2 = Symbol(&apos;desc&apos;)
+Symbol.keyFor(s1) === &apos;desc&apos; // true
+Symbol.keyFor(s2) // undefined
+</code></pre><p>es6内置的<code>Symbol</code>值此处不讲，有需求可以查询相应资料。</p>
+<p>TO BE CONTINUED!</p>
+</div><div class="tags"><a href="/tags/es6/">es6</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2017/10/03/ES6小结(3)/" class="pre">ES6小记(3)</a><a href="/2017/10/01/ES6小结/" class="next">ES6小记(1)</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ES6小计-2"><span class="toc-text">ES6小计(2)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-函数的扩展"><span class="toc-text">7. 函数的扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-参数的默认值"><span class="toc-text">7.1 参数的默认值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-rest参数"><span class="toc-text">7.2 rest参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-扩展运算符"><span class="toc-text">7.3 ...扩展运算符</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-箭头函数"><span class="toc-text">7.4 箭头函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-5-尾调用优化与尾递归优化"><span class="toc-text">7.5 尾调用优化与尾递归优化</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-对象的扩展"><span class="toc-text">8. 对象的扩展</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#8-1-对象属性与方法名的简洁缩写"><span class="toc-text">8.1 对象属性与方法名的简洁缩写</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-2-属性名可用表达式定义"><span class="toc-text">8.2 属性名可用表达式定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-3-Object-is"><span class="toc-text">8.3 Object.is()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-4-Object-assign"><span class="toc-text">8.4 Object.assign()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8-5-属性的可枚举性"><span class="toc-text">8.5 属性的可枚举性</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-Symbol"><span class="toc-text">9. Symbol</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#9-1-Symbol类型的创建"><span class="toc-text">9.1 Symbol类型的创建</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-2-Symbol作为属性名"><span class="toc-text">9.2 Symbol作为属性名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-3-对象Symbol属性的遍历"><span class="toc-text">9.3 对象Symbol属性的遍历</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9-4-Symbol-for-和Symbol-keyFor"><span class="toc-text">9.4 Symbol.for()和Symbol.keyFor()</span></a></li></ol></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/kue任务队列使用/">kue任务队列使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/redis-cli指令/">redis-cli指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/node将json转换为excel/">node将json转换为excel</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/09/co模块异步书写/">co模块异步书写</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/09/发布订阅模式的事件BUS/">发布订阅模式的事件BUS</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/策略模式文本校验/">策略模式文本校验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/27/stylus语法简介/">stylus语法简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/chrome中圆角遮盖不住transform动画导致子元素溢出/">chrome中圆角遮盖不住transform动画导致子元素溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/03/ES6小结(3)/">ES6小记(3)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/02/ES6小结(2)/">ES6小记(2)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>
