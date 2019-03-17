@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>ES6小记(6) | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">ES6小记(6)</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">ES6小记(6)</h1><div class="post-meta"><a href="/2017/10/06/ES6小结(6)/#comments" class="comment-count"></a><p><span class="date">Oct 06, 2017</span></p></div><div class="post-content"><h2 id="ES6小计-6"><a href="#ES6小计-6" class="headerlink" title="ES6小计(6)"></a>ES6小计(6)</h2><h3 id="17-Class"><a href="#17-Class" class="headerlink" title="17. Class"></a>17. Class</h3><h4 id="17-1-Class基本语法"><a href="#17-1-Class基本语法" class="headerlink" title="17.1 Class基本语法"></a>17.1 Class基本语法</h4><p>JavaScript中其实是没有类这个概念的，有的只是对象的引用。</p>
+<pre><code>function Point(x, y) {
+    this.x = x
+    this.y = y
+}
+Point.prototype.toString = function() {
+    return &apos;(&apos; + this.x + &apos;, &apos; + this.y + &apos;)&apos;
+}
+</code></pre><p>上面这种写法不方便，且封装不完全。故ES6引入了Class概念做为对象模板，新的这个写法仅仅是让对象原型的写法更加清晰而已。</p>
+<pre><code>class Point {
+    constructor(x, y) {
+        this.x = x
+        this.y = y
+    }
+
+    toString() {
+        return &apos;(&apos; + this.x + &apos;, &apos; + this.y + &apos;)&apos;
+    }
+}
+</code></pre><p>可以看出ES6中类的写法中，有一个<code>constructor</code>方法，称为构造函数方法，类中<code>this</code>代表实例对象，另<strong>类内部函数类似于对象，但是属性之间不要加<code>,</code>，否则会报错</strong>。自定义属性需要放在<code>constructor</code>构造函数中。</p>
+<pre><code>typeof Point // function
+Point === Point.prototype.constructor
+</code></pre><p>类的数据类型就是一个函数，类本身指向构造函数。类的所有方法(包括构造方法)均定义在类的prototype属性上。实例方法的调用，就是调用原型上的方法。<strong>类内部定义的所有方法都是不可枚举的，</strong>这点与ES5中prototype上的方法不同，但很有意义。</p>
+<p>constructor方法是类的默认方法，在实例化类<code>new</code>时执行，若没有显示定义constructor方法，系统将会自动为类添加一个空的constructor方法。</p>
+<p>类的实例化同ES5的构造函数一致，使用<code>new</code>关键字，若没有使用<code>new</code>实例化，将会报错。类的所有实例共享一个原型对象，同ES5的继承一致。</p>
+<p>类的<code>name</code>属性总是返回<code>class</code>关键字后面的类名。<code>class Point {}; Point.name // Point</code></p>
+<p>Class定义不存在变量提升，与<code>let</code>一致，必须先定义，再使用，当使用未定义的Class时，会报错。</p>
+<p>类和模块的内部默认为严格模式，所以不需要使用<code>use strict</code>指定运行模式。</p>
+<h4 id="17-2-Class的继承"><a href="#17-2-Class的继承" class="headerlink" title="17.2 Class的继承"></a>17.2 Class的继承</h4><p>Class之间可以通过<code>extends</code>关键字实现继承。</p>
+<pre><code>class ColorPoint extends Point {
+    constructor(x, y, color) {
+        super(x, y)
+        this.color = color
+    }
+    toString() {
+        return this.color + &apos; &apos; + super.toString()
+    }
+}
+
+let cp = new ColorPoint(25, 7, &apos;green&apos;)
+cp instanceof ColorPoint // true
+cp instanceof Point // true
+</code></pre><p>Class内部的<code>super</code>指代父类的实例。<strong>子类必须在<code>constructor</code>方法中调用<code>super</code>方法</strong>，否则在新建实例的时候会报错。这是因为子类没有自己的<code>this</code>对象，而是继承父类的this对象，然后对其加工。如不调用<code>super</code>方法，则得不到<code>this</code>对象，自然也就无法返回<code>this</code>实例。故必须在使用<code>super</code>后再使用<code>this</code>。</p>
+<p><strong>类的<code>prototype</code>属性和<code>__proto__</code>属性</strong>：大多数浏览器的ES5实现中，每一个对象均有<code>__proto__</code>属性，指向对应构造函数的<code>prototype</code>属性。而类同时有<code>prototype</code>属性和<code>__proto__</code>属性，因此存在两条继承链。</p>
+<ol>
+<li>子类的<code>__proto__</code>属性表示构造函数的继承，总指向父类(实例继承实例)；</li>
+<li><p>子类<code>prototype</code>属性的<code>__proto__</code>属性表示方法的继承，总指向父类的<code>prototype</code>属性(原型继承原型)。</p>
+<p> class A {}<br> class B extends A {}<br> B.<strong>proto</strong> === A // true<br> B.prototype.<strong>proto</strong> === A.prototype // true<br> B.<strong>Proto</strong>.<strong>proto</strong> === A.<strong>proto</strong> // true</p>
+</li>
+</ol>
+<p><strong>Object.getPrototypeOf()</strong><br><code>Object.getPrototypeOf()</code>可以用于从子类上获取父类，可以用此方法判断一个类是否继承了另一个类。</p>
+<pre><code>Object.getPrototypeOf(ColorPoint) === Point // true
+</code></pre><h4 id="17-3-原生构造函数的继承"><a href="#17-3-原生构造函数的继承" class="headerlink" title="17.3 原生构造函数的继承"></a>17.3 原生构造函数的继承</h4><p>ECMAScript的原生构造函数：</p>
+<ul>
+<li>Boolean()</li>
+<li>Number()</li>
+<li>String()</li>
+<li>Array()</li>
+<li>Date()</li>
+<li>Function()</li>
+<li>Regexp()</li>
+<li>Error()</li>
+<li>Object()</li>
+</ul>
+<p>ES6之前，由于子类无法获取原生构造函数的内部属性，故无法对原生构造函数进行继承。而通过<code>extends</code>进行继承，是通过先建立父类实例对象的<code>this</code>，再对<code>this</code>对象进行修饰，故<code>extends</code>的继承可以继承原生构造函数，也就意味着可以在原生构造函数的基础上进行新的类定义。</p>
+<pre><code>class MyArray extends Array {
+    constructor(...args) {
+        super(...args)
+    }
+}
+</code></pre></div><div class="tags"><a href="/tags/es6/">es6</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2017/10/24/chrome中圆角遮盖不住transform动画导致子元素溢出/" class="pre">chrome中圆角遮盖不住transform动画导致子元素溢出</a><a href="/2017/10/05/ES6小结(5)/" class="next">ES6小记(5)</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ES6小计-6"><span class="toc-text">ES6小计(6)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#17-Class"><span class="toc-text">17. Class</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#17-1-Class基本语法"><span class="toc-text">17.1 Class基本语法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#17-2-Class的继承"><span class="toc-text">17.2 Class的继承</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#17-3-原生构造函数的继承"><span class="toc-text">17.3 原生构造函数的继承</span></a></li></ol></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/kue任务队列使用/">kue任务队列使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/redis-cli指令/">redis-cli指令</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/03/22/node将json转换为excel/">node将json转换为excel</a></li><li class="post-list-item"><a class="post-list-link" href="/2018/02/09/co模块异步书写/">co模块异步书写</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/09/发布订阅模式的事件BUS/">发布订阅模式的事件BUS</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/12/03/策略模式文本校验/">策略模式文本校验</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/27/stylus语法简介/">stylus语法简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/24/chrome中圆角遮盖不住transform动画导致子元素溢出/">chrome中圆角遮盖不住transform动画导致子元素溢出</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/06/ES6小结(6)/">ES6小记(6)</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/05/ES6小结(5)/">ES6小记(5)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>
