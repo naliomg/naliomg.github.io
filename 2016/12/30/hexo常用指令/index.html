@@ -1,0 +1,125 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>hexo常用指令 | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">hexo常用指令</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">hexo常用指令</h1><div class="post-meta"><a href="/2016/12/30/hexo常用指令/#comments" class="comment-count"></a><p><span class="date">Dec 30, 2016</span><span><a href="/categories/工具/" class="category">工具</a></span></p></div><div class="post-content"><h2 id="hexo常用指令"><a href="#hexo常用指令" class="headerlink" title="hexo常用指令"></a>hexo常用指令</h2><h3 id="hexo"><a href="#hexo" class="headerlink" title="hexo"></a>hexo</h3><pre><code>npm install hexo -g #安装  
+npm update hexo -g #升级  
+hexo init #初始化
+</code></pre><h3 id="简写"><a href="#简写" class="headerlink" title="简写"></a>简写</h3><pre><code>hexo n &quot;我的博客&quot; == hexo new &quot;我的博客&quot; #新建文章
+hexo p == hexo publish
+hexo g == hexo generate#生成
+hexo s == hexo server #启动服务预览
+hexo d == hexo deploy#部署
+</code></pre><h3 id="服务器"><a href="#服务器" class="headerlink" title="服务器"></a>服务器</h3><pre><code>hexo server #Hexo 会监视文件变动并自动更新，您无须重启服务器。
+hexo server -s #静态模式
+hexo server -p 5000 #更改端口
+hexo server -i 192.168.1.1 #自定义 IP
+
+hexo clean #清除缓存 网页正常情况下可以忽略此条命令
+hexo g #生成静态网页
+hexo d #开始部署
+</code></pre><h3 id="监视文件变动"><a href="#监视文件变动" class="headerlink" title="监视文件变动"></a>监视文件变动</h3><pre><code>hexo generate #使用 Hexo 生成静态文件快速而且简单
+hexo generate --watch #监视文件变动
+</code></pre><h3 id="完成后部署"><a href="#完成后部署" class="headerlink" title="完成后部署"></a>完成后部署</h3><p>两个命令的作用是相同的</p>
+<pre><code>hexo generate --deploy
+hexo deploy --generate
+hexo deploy -g
+hexo server -g
+</code></pre><h3 id="草稿"><a href="#草稿" class="headerlink" title="草稿"></a>草稿</h3><pre><code>hexo publish [layout] &lt;title&gt;
+</code></pre><h3 id="模版"><a href="#模版" class="headerlink" title="模版"></a>模版</h3><pre><code>hexo new &quot;postName&quot; #新建文章
+hexo new page &quot;pageName&quot; #新建页面
+hexo generate #生成静态页面至public目录
+hexo server #开启预览访问端口（默认端口4000，&apos;ctrl + c&apos;关闭server）
+hexo deploy #将.deploy目录部署到GitHub
+
+hexo new [layout] &lt;title&gt;
+hexo new photo &quot;My Gallery&quot;
+hexo new &quot;Hello World&quot; --lang tw
+
+变量  描述
+layout  布局
+title   标题
+date    文件建立日期
+title: 使用Hexo搭建个人博客
+layout: post
+date: 2014-03-03 19:07:43
+comments: true
+categories: Blog
+tags: [Hexo]
+keywords: Hexo, Blog
+description: 生命在于折腾，又把博客折腾到Hexo了。给Hexo点赞。
+模版（Scaffold）
+hexo new photo &quot;My Gallery&quot;
+
+变量  描述
+layout  布局
+title   标题
+date    文件建立日期
+设置文章摘要
+以上是文章摘要 &lt;!--more--&gt; 以下是余下全文 
+写作
+hexo new page &lt;title&gt;
+hexo new post &lt;title&gt;
+
+变量  描述
+:title  标题
+:year   建立的年份（4 位数）
+:month  建立的月份（2 位数）
+:i_month    建立的月份（去掉开头的零）
+:day    建立的日期（2 位数）
+:i_day  建立的日期（去掉开头的零）
+推送到服务器上
+hexo n #写文章
+hexo g #生成
+hexo d #部署 #可与hexo g合并为 hexo d -g
+</code></pre><h3 id="报错"><a href="#报错" class="headerlink" title="报错"></a>报错</h3><p>1.找不到git部署<br>ERROR Deployer not found: git<br>解决方法:</p>
+<pre><code>npm install hexo-deployer-git --save
+</code></pre><p>2.部署类型设置git<br>hexo 3.0 部署类型不再是github，_config.yml 中修改</p>
+<pre><code>Deployment
+    Docs: http://hexo.io/docs/deployment.html
+deploy:
+  type: git
+  repository: git@***.github.com:***/***.github.io.git
+  branch: master
+</code></pre><p>3.xcodebuild<br>xcode-select: error: tool ‘xcodebuild’ requires Xcode, but active developer directory ‘/Library/Developer/CommandLineTools’ is a command line tools instance</p>
+<pre><code>npm install bcrypt
+</code></pre><p>4.RSS不显示<br>安装RSS插件</p>
+<pre><code>npm install hexo-generator-feed --save
+</code></pre><p>5.开启RSS功能<br>编辑hexo/_config.yml，添加如下代码：</p>
+<pre><code>rss: /atom.xml #rss地址  默认即可
+</code></pre><p>6.开启评论<br>1.我使用多说代替自带的评论，在多说 网站注册 &gt; 后台管理 &gt; 添加新站点 &gt; 工具 === 复制通用代码 里面有 short_name<br>在根目录 _config.yml 添加一行 disqus_shortname: jslite 是在多说注册时产生的<br>复制到 themes\landscape\layout_partial\article.ejs<br>把</p>
+<pre><code>&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname){ %&gt;
+&lt;section id=&quot;comments&quot;&gt;
+&lt;div id=&quot;disqus_thread&quot;&gt;
+  &lt;noscript&gt;Please enable JavaScript to view the &lt;a href=&quot;//disqus.com/?ref_noscript&quot;&gt;comments powered by Disqus.&lt;/a&gt;&lt;/noscript&gt;
+&lt;/div&gt;
+&lt;/section&gt;
+&lt;% } %&gt;
+</code></pre><p>改为</p>
+<pre><code>&lt;% if (!index &amp;&amp; post.comments &amp;&amp; config.disqus_shortname){ %&gt;
+  &lt;section id=&quot;comments&quot;&gt;
+    &lt;!-- 多说评论框 start --&gt;
+    &lt;div class=&quot;ds-thread&quot; data-thread-key=&quot;&lt;%= post.layout %&gt;-&lt;%= post.slug %&gt;&quot; data-title=&quot;&lt;%= post.title %&gt;&quot; data-url=&quot;&lt;%= page.permalink %&gt;&quot;&gt;&lt;/div&gt;
+    &lt;!-- 多说评论框 end --&gt;
+    &lt;!-- 多说公共JS代码 start (一个网页只需插入一次) --&gt;
+    &lt;script type=&quot;text/javascript&quot;&gt;
+    var duoshuoQuery = {short_name:&apos;&lt;%= config.disqus_shortname %&gt;&apos;};
+      (function() {
+        var ds = document.createElement(&apos;script&apos;);
+        ds.type = &apos;text/javascript&apos;;ds.async = true;
+        ds.src = (document.location.protocol == &apos;https:&apos; ? &apos;https:&apos; : &apos;http:&apos;) + &apos;//static.duoshuo.com/embed.js&apos;;
+        ds.charset = &apos;UTF-8&apos;;
+        (document.getElementsByTagName(&apos;head&apos;)[0] 
+         || document.getElementsByTagName(&apos;body&apos;)[0]).appendChild(ds);
+      })();
+      &lt;/script&gt;
+    &lt;!-- 多说公共JS代码 end --&gt;
+  &lt;/section&gt;
+&lt;% } %&gt;
+</code></pre><p>文章摘自：<a href="https://segmentfault.com/a/1190000002632530" target="_blank" rel="noopener">https://segmentfault.com/a/1190000002632530</a></p>
+<p>本主题文档：<a href="http://forsigner.com/2016/03/10/fexo-doc-zh-cn/" target="_blank" rel="noopener">http://forsigner.com/2016/03/10/fexo-doc-zh-cn/</a></p>
+</div><div class="tags"><a href="/tags/hexo/">hexo</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2016/12/30/常用工具网站/" class="pre">常用工具网站</a><a href="/2016/12/29/MD基础语法记录/" class="next">MD基础语法记录</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#hexo常用指令"><span class="toc-text">hexo常用指令</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#hexo"><span class="toc-text">hexo</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简写"><span class="toc-text">简写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器"><span class="toc-text">服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#监视文件变动"><span class="toc-text">监视文件变动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完成后部署"><span class="toc-text">完成后部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#草稿"><span class="toc-text">草稿</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模版"><span class="toc-text">模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#报错"><span class="toc-text">报错</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/18/git/">Git使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/23/CORS跨域与Express实现/">CORS跨域与Express实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/css单位/">css长度单位</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/CSS3实现3D旋转/">CSS3实现3D旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue-router/">vue-router简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue/">Vue简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/02/移动端HTML适配/">移动端HTML适配</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/js工具函数/">JS常用工具函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/css-reset/">css-reset</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/05/koa/">Koa2使用简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/node/">node</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/css3/" style="font-size: 15px;">css3</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/ts/" style="font-size: 15px;">ts</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/html/" style="font-size: 15px;">html</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>

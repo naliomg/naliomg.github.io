@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>ES6小记(4) | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">ES6小记(4)</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">ES6小记(4)</h1><div class="post-meta"><a href="/2017/10/04/ES6小结(4)/#comments" class="comment-count"></a><p><span class="date">Oct 04, 2017</span></p></div><div class="post-content"><h2 id="ES6小计-4"><a href="#ES6小计-4" class="headerlink" title="ES6小计(4)"></a>ES6小计(4)</h2><h3 id="13-Iterator和for…of"><a href="#13-Iterator和for…of" class="headerlink" title="13. Iterator和for…of"></a>13. Iterator和for…of</h3><h4 id="13-1-Iterator遍历器"><a href="#13-1-Iterator遍历器" class="headerlink" title="13.1 Iterator遍历器"></a>13.1 Iterator遍历器</h4><p>遍历器创建一个指针对象，通过不断调用指针对象的next方法移动指针指向，不断对对象成员进行遍历。拥有遍历器接口的对象，均可以使用<code>for...of</code>进行遍历。数组、类数组、Set结构、Map结构自带遍历器接口，可直接使用<code>for...of</code>进行遍历。</p>
+<p>调用遍历器接口的场合：<br>数组和Set的结构赋值、扩展运算符、<code>yield*</code>状态机、<code>for...of</code>、<code>Array.from()</code>、<code>Map()</code>、<code>Set()</code>、<code>Promise.all()</code>、<code>Promise.race()</code></p>
+<p>字符串为类数组解构，也具有遍历器解构。</p>
+<h4 id="13-2-for…of循环"><a href="#13-2-for…of循环" class="headerlink" title="13.2 for…of循环"></a>13.2 for…of循环</h4><p><code>for...of</code>用于遍历所有数据结构的统一方法。只要一个数据结构有<code>Symbol.iterator</code>属性，就可以用<code>for...of</code>进行遍历。</p>
+<pre><code>var arr = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;]
+for (let a in arr) { console.log(a) } // 0 1 2
+for (let a of arr) { console.log(a) } // a b c
+</code></pre><p><code>for...in</code>用于遍历键名，<code>for...of</code>用于遍历键值。如果要通过<code>for...of</code>遍历键名，可以借助数组实例的<code>entries()</code>和<code>keys()</code>方法进行遍历。<br><code>for...of</code>遍历数组时，只会遍历数字索引的属性，与<code>for...in</code>有点不一致。</p>
+<p><code>Set</code>和<code>Map</code>的<code>for...of</code>遍历：</p>
+<pre><code>var engines = new Set([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;c&apos;])
+for (var e of engines) {
+    console.log(e) 
+}
+// a
+// b
+// c
+var es6 = new Map()
+es6.set(&apos;a&apos;, 1)
+es6.set(&apos;b&apos;, 2)
+es6.set(&apos;c&apos;, 3)
+for (var [key, value] of es6) {
+    console.log(key + &apos;:&apos; + value)
+}
+// a:1
+// b:2
+// c:3
+</code></pre><p>遍历的顺序是按添加顺序进行的，Set遍历为一个值，Map遍历时一个键和值组成的数组。对于有的不含遍历接口的类数组<code>{0: &#39;a&#39;, 1: &#39;b&#39;, length: 2}</code>，可以先用<code>Array.from()</code>将其转换为数组后遍历。<br><code>for...of</code>不能遍历普通对象。但可以用<code>Object.keys()</code>将对象的键名生成数组后进行遍历。</p>
+<h4 id="13-3-遍历比较"><a href="#13-3-遍历比较" class="headerlink" title="13.3 遍历比较"></a>13.3 遍历比较</h4><p><code>for</code>循环：最原始，书写较麻烦。<br>数组的<code>forEach</code>循环：<code>arr.forEach(function(value) { console.log(value) })</code>，缺点是无法跳出循环。<br><code>for...in</code>循环：不仅遍历数字键名，还遍历原型链上的键，这往往不是我们想要的，且遍历有时顺序随机。<br><code>for...of</code>循环：没有上述的缺点。</p>
+<h3 id="14-Generator函数"><a href="#14-Generator函数" class="headerlink" title="14. Generator函数"></a>14. Generator函数</h3><h4 id="14-1-简介"><a href="#14-1-简介" class="headerlink" title="14.1 简介"></a>14.1 简介</h4><p>Generator函数是一种新的JS异步编程解决方案。可以把它理解为一个状态机，在这个状态机内，有多个需要依次去检测其状态的异步函数。Generator函数会返回一个遍历器对象，故其也是一个遍历器对象生成函数。</p>
+<p>Generator函数有两个特征：一是在<code>function</code>与函数名之间有一个<code>*</code>号；而是内部用<code>yield</code>定义不同的状态。</p>
+<pre><code>function *temp() {
+    yield &apos;a&apos;;
+    yield &apos;b&apos;;
+    return &apos;c&apos;
+}
+
+let hw = temp()
+hw.next() // {value: &apos;a&apos;, done: false}
+hw.next() // {value: &apos;b&apos;, done: false}
+hw.next() // {done: true}
+</code></pre><p>Generator函数的调用方法与普通函数一样，但因Generator函数返回的是一个遍历器对象，故函数内容并没有执行，需要用遍历器对象的<code>next</code>方法去遍历执行。每次调用<code>next</code>方法，内部指针就从函数的头部或上一次停下来的地方开始执行，执行到下一个<code>yield</code>(会执行完遇到的这个yield语句)或者<code>return</code>语句为止。</p>
+<p>从上述变现看，Generator函数是一个可以暂停执行的函数，<code>yield</code>就是暂停语句。<code>yield</code>暂停语句不能用在普通函数中，会报错。若<code>yield</code>语句在表达式中用于计算时，需要在<code>()</code>内使用。用于赋值表达式的又边时，可以不加括号。</p>
+<h4 id="14-2-next-方法参数"><a href="#14-2-next-方法参数" class="headerlink" title="14.2 next 方法参数"></a>14.2 next 方法参数</h4><p><code>yield</code>语句本身没有返回值，但<code>next()</code>方法可以带一个参数，携带的这个参数会被当做上一条<code>yeild</code>语句的返回值。故可以通过<code>next()</code>方法向函数内部注入控制值，但又有函数的上下文环境。</p>
+<pre><code>function *foo(x) {
+    var y = 2 * (yield (x + 1))
+    var z = yield (y / 3)
+    return x + y + z
+}
+var a = foo(5)
+a.next() // {value: 6, done: false}
+a.next() // {value: NaN, done: false} 注意yield无返回值，y = 2 * undefined == NaN
+a.next() // {value: NaN, done: true}
+var b = foo(5)
+b.next() // {value: 6, done: false}
+b.next(12) // {value: 8, done: false} // y = 2 * 12
+b.next(13) // {value: 42, done: true} // x = 5, y = 24, z = 13
+</code></pre><p>第一条<code>next</code>语句不能有参数，因参数代表上一条语句的返回值。当然，可以在Generator函数外再包一层已有一个自执行的<code>next()</code>方法的状态机函数就行了。</p>
+<h4 id="14-3-for-of循环"><a href="#14-3-for-of循环" class="headerlink" title="14.3 for...of循环"></a>14.3 <code>for...of</code>循环</h4><p><code>for...of</code>可以自动遍历Generator函数，不需要使用next方法。当<code>next</code>方法返回对象的<code>done</code>属性为<code>true</code>时，<code>for...of</code>循环终止，并且不包含返回对象。</p>
+<pre><code>function *foo() {
+    yield 1
+    yield 2
+    yield 3
+    return 4
+}
+for (let v of foo()) {
+    console.log(v)
+}
+// 1 2 3
+</code></pre><h4 id="14-4-Generator-prototype-throw"><a href="#14-4-Generator-prototype-throw" class="headerlink" title="14.4 Generator.prototype.throw()"></a>14.4 <code>Generator.prototype.throw()</code></h4><p>Generator函数返回的遍历器对象都有一个<code>throw</code>方法，可以在函数体外抛出错误，但是错误的冒泡，会从函数体内开始。类似于错误注入到状态机内。注入的位置为<code>yield</code>关键字位置，在后续语句执行前。若此处上下文没有进行错误捕获，错误则会冒泡到函数外部。类似于<code>Promise</code>的<code>reject</code>。</p>
+<pre><code>var g = function *() {
+    while (true) {
+        try {
+            yield;
+        } catch (e) {
+            if (e != &apos;a&apos;) throw e
+            console.log(&apos;内部捕获&apos;, e)
+        }
+    }
+}
+var i = g()
+i.next()
+try {
+    i.throw(&apos;a&apos;)
+    i.throw(&apos;b&apos;)
+} catch (e) {
+    console.log(&apos;外部捕获&apos;, e)
+}
+// 内部捕获 a
+// 外部捕获 b
+</code></pre><p>这就意味着，将状态机内用<code>try...catch</code>包装起来后，可以用防止状态机内错误外泄，且便于统一处理。若状态机内执行过程中抛出错误，就不会再执行了。若此后再调用<code>next</code>方法，将返回<code>{value: undefined, done: true}</code>对象。</p>
+<h4 id="14-5-Generator-prototype-return"><a href="#14-5-Generator-prototype-return" class="headerlink" title="14.5 Generator.prototype.return()"></a>14.5 <code>Generator.prototype.return()</code></h4><p>Generator函数返回的遍历器对象都有一个<code>return</code>方法，可以返回给定的值，并终止遍历。</p>
+<pre><code>function *gen() {
+    yield 1
+    yield 2
+    yield 3
+}
+var g = gen()
+g.next() // {value: 1, done: false}
+g.return(&apos;foo&apos;) // {value: &apos;foo&apos;, done: true}
+g.next() // {value: undefined, done: true}
+</code></pre><p>当<code>return()</code>不传值时，返回值<code>value</code>为<code>undefined</code>。</p>
+<pre><code>function *numbers() {
+    yield 1
+    try {
+        yield 2
+        yield 3
+    } finally {
+        yield 4
+        yield 5
+    }
+    yield 6
+}
+var g = numbers()
+g.next() // {value: 1, done: false}
+g.next() // {value: 2, done: false}
+g.return(7) // {value: 4, done: false}
+g.next() // {value: 5, done: false}
+g.next() // {value: 7, done: true}
+</code></pre><p>注意当<code>return</code>在<code>try</code>代码块内返回时，要等到<code>finally</code>结束后才会执行<code>return</code>返回值。<code>finally</code>内等同于<code>try</code>外部，但是<code>try</code>后会执行。</p>
+<h4 id="14-6-yield-语句"><a href="#14-6-yield-语句" class="headerlink" title="14.6 yield* 语句"></a>14.6 yield* 语句</h4><p>如果在Generator函数内部调用另外一个Generator函数，默认情况下是没有效果的，因为Generator函数仅仅返回的是一个遍历器对象。但我们想要这个遍历器对象也生效时，就要用<code>yield*</code>方法调用内部Generator函数了，类似于对于这个遍历器对象做<code>for...of</code>遍历。其实<code>yield*</code>语法完全可以用<code>for...of</code>进行转换。</p>
+<pre><code>function *foo() { yield &apos;a&apos;; yield &apos;b&apos;; }
+function *bar() { yield &apos;x&apos;; foo(); yield &apos;y&apos; }
+function *set1() { yield &apos;x&apos;; yield* foo(); yield &apos;y&apos; }
+function *set2() { yield &apos;x&apos;; for (let v of bar()) { yield v }; yield &apos;y&apos; }
+for (let v of bar()) {
+    console.log(v)
+}
+// x
+// y
+for (let v of set1()) {
+    console.log(v)
+}
+// x
+// a
+// b
+// y
+for (let v of set2()) {
+    console.log(v)
+} 
+</code></pre><p>上面例子最后set2输出同set1一致，不过set2中for…of循环需要自己做yield处理。并不是像yield<em> 语句一样，将内部遍历器对象与外部遍历器对象合并了。准确的说，是`yield</em>`将内部遍历器对象提取到外部来了。</p>
+<p>任何数据结构，具有Iterator接口，就可以使用<code>yield*</code>进行遍历，与<code>for...of</code>表现一致。若内部Generator函数内有<code>return</code>语句进行返回时，可以向外部Generator函数进行数据返回。如用<code>yield*</code>进行处理内部状态机时，有两步：将内部状态机遍历器对象提取到外部，返回内部return的返回值。</p>
+<pre><code>function *g() {
+    yield &apos;a&apos;
+    yield &apos;b&apos;
+    return &apos;result:&apos;
+}
+function *g2(send) {
+    let result = yield* send()
+    console.log(result)
+}
+console.log([...g2(g)])
+// result:
+// [ &apos;a&apos;, &apos;b&apos; ]
+</code></pre><p>故可以很方便地取出多重数组内部的值。</p>
+<h4 id="14-7-作为对象属性的Generator函数"><a href="#14-7-作为对象属性的Generator函数" class="headerlink" title="14.7 作为对象属性的Generator函数"></a>14.7 作为对象属性的Generator函数</h4><pre><code>let obj = {
+    gen: function *() {}
+}
+// 等同于
+let obj = {
+    * gen() {}
+}
+</code></pre><h4 id="14-8-Generator函数内的this"><a href="#14-8-Generator函数内的this" class="headerlink" title="14.8 Generator函数内的this"></a>14.8 Generator函数内的this</h4><p>因为Generator函数返回的时一个遍历器对象，故在没有对遍历器遍历时，Generator内部逻辑是没有执行的，故内部的<code>this</code>无效。但可以使用<code>bind</code>显式地对内部<code>this</code>进行绑定，并且对遍历器对象进行遍历后，<code>this</code>才会有正确的指向。</p>
+<pre><code>function *g() {
+    this.a = 1
+}
+let obj = g()
+obj.a // undefined
+
+function *f() {
+    yield this.x = 2
+    yield this.y = 3
+}
+let obj = {}
+let temp = f.bind(obj)()
+temp.next() // {value: 2, done: false}
+temp.next() // {value: 3, done: false}
+temp.next() // {value: undefined, done: true}
+obj // {x: 2, y: 3}
+</code></pre><h4 id="14-9-应用"><a href="#14-9-应用" class="headerlink" title="14.9 应用"></a>14.9 应用</h4><p>Generator函数的暂停执行效果，意味着把异步操作写在<code>yield</code>语句后，就可以通过<code>next</code>方法进行异步调用，顺序执行。</p>
+<p>TO BE CONTINUED!</p>
+</div><div class="tags"><a href="/tags/es6/">es6</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2017/10/05/ES6小结(5)/" class="pre">ES6小记(5)</a><a href="/2017/10/03/ES6小结(3)/" class="next">ES6小记(3)</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#ES6小计-4"><span class="toc-text">ES6小计(4)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#13-Iterator和for…of"><span class="toc-text">13. Iterator和for…of</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#13-1-Iterator遍历器"><span class="toc-text">13.1 Iterator遍历器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13-2-for…of循环"><span class="toc-text">13.2 for…of循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13-3-遍历比较"><span class="toc-text">13.3 遍历比较</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-Generator函数"><span class="toc-text">14. Generator函数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#14-1-简介"><span class="toc-text">14.1 简介</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-2-next-方法参数"><span class="toc-text">14.2 next 方法参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-3-for-of循环"><span class="toc-text">14.3 for...of循环</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-4-Generator-prototype-throw"><span class="toc-text">14.4 Generator.prototype.throw()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-5-Generator-prototype-return"><span class="toc-text">14.5 Generator.prototype.return()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-6-yield-语句"><span class="toc-text">14.6 yield* 语句</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-7-作为对象属性的Generator函数"><span class="toc-text">14.7 作为对象属性的Generator函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-8-Generator函数内的this"><span class="toc-text">14.8 Generator函数内的this</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14-9-应用"><span class="toc-text">14.9 应用</span></a></li></ol></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/18/git/">Git使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/23/CORS跨域与Express实现/">CORS跨域与Express实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/css单位/">css长度单位</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/CSS3实现3D旋转/">CSS3实现3D旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue-router/">vue-router简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue/">Vue简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/02/移动端HTML适配/">移动端HTML适配</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/js工具函数/">JS常用工具函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/css-reset/">css-reset</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/05/koa/">Koa2使用简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/node/">node</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/css3/" style="font-size: 15px;">css3</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/ts/" style="font-size: 15px;">ts</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/html/" style="font-size: 15px;">html</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>

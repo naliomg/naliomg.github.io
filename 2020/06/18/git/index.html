@@ -1,0 +1,108 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Git使用 | Nali</title><link rel="stylesheet" type="text/css" href="//fonts.neworld.org/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.1"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.1"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Git使用</h1><a id="logo" href="/.">Nali</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Arama"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">Git使用</h1><div class="post-meta"><a href="/2020/06/18/git/#comments" class="comment-count"></a><p><span class="date">Jun 18, 2020</span></p></div><div class="post-content"><h2 id="Git常见使用"><a href="#Git常见使用" class="headerlink" title="Git常见使用"></a>Git常见使用</h2><ol>
+<li><p><code>git clone http||ssh</code> 代码拉取;</p>
+</li>
+<li><p><code>git status</code> 查看当前分支有哪些修改;</p>
+</li>
+<li><p><code>git diff</code> 查看当前没有add的内容</p>
+</li>
+<li><p><code>git add .</code> 将本地所有新增文件提交到本地缓存区</p>
+</li>
+<li><p><code>git add [filepath]</code> 将本地某个新增文件提交到本地缓存区</p>
+</li>
+<li><p><code>git commit -m &#39;log&#39;</code> 把stage中所有的修改提交到本地库</p>
+</li>
+<li><p><code>git push</code> 把本地库的修改提交到远程库中</p>
+</li>
+<li><p><code>git pull</code> 把远程库的代码更新到工作台</p>
+</li>
+<li><p><code>git fetch</code> 把远程库的代码更新到本地库，相较于git pull，fetch只更新了本地的origin分支，需要用户自行与工作区比较合并，但pull会更新本地origin，同时更新工作区。</p>
+</li>
+<li><p><code>git branch -a</code> 查看全部分支</p>
+</li>
+<li><p><code>git checkout master/branch</code> 切换到某个分支</p>
+</li>
+<li><p><code>git log</code> 查看当前分支上面的日志信息</p>
+</li>
+<li><p><code>git remote -v</code> 查看远程仓库地址</p>
+</li>
+<li><p><code>git branch 分支名</code> 创建新的分支</p>
+</li>
+<li><p><code>git revert commitid</code> 将本地修改还原回 线上的版本</p>
+</li>
+<li><p><code>git checkout -- a.txt</code> 放弃某个文件在工作区的修改，不会修改缓存区(add)和HEAD(commit)版本，还原到缓存区状态</p>
+</li>
+<li><p><code>git checkout -- .</code> 放弃整个工作区的修改</p>
+</li>
+<li><p><code>git reset HEAD --hard</code> 放弃缓存区(add)的修改，–hard 同时更改工作区，不然只撤销对缓存区的修改</p>
+</li>
+<li><p><code>git reset HEAD a.txt</code> 放弃缓存区某个文件的记录，但是不会更改文件</p>
+</li>
+<li><p><code>git reset HEAD .</code> 放弃整个缓存区的文件记录，但是不会更改文件</p>
+</li>
+<li><p><code>git reset --hard commitid</code> 回到某个提交的commit</p>
+</li>
+<li><p><code>git reset --hard HEAD^</code> 回到当前HEAD的上一个版本</p>
+</li>
+</ol>
+<p>常见场景：</p>
+<p><strong>撤销</strong>：未进行git push前的所有操作，都是在“本地仓库”中执行的。</p>
+<ol>
+<li><p>文件被修改了，但未执行git add操作(working tree内撤销)。 记住<code>checkout</code>是撤销对工作区的更改。</p>
+<pre><code>git checkout fileName
+git checkout .
+</code></pre></li>
+<li><p>同时对多个文件执行了git add操作，但本次只想提交其中一部分文件。记住<code>reset</code>是撤销对缓冲区的更改。HEAD代表回退操作的版本。</p>
+<pre><code>git add *
+git status
+# 取消暂存
+git reset HEAD filename
+</code></pre></li>
+<li><p>文件执行了git add操作，但想撤销对其的修改（index内回滚）。</p>
+<pre><code># 取消暂存
+git reset HEAD fileName
+# 撤销修改
+git checkout fileName
+</code></pre></li>
+<li><p>修改的文件已被git commit，但想再次修改不再产生新的Commit</p>
+<pre><code>git add sample.txt
+git commit --amend -m &quot;说明&quot;
+</code></pre></li>
+<li><p>撤销指定文件到指定版本</p>
+<pre><code># 查看指定文件的历史版本
+git log &lt;filename&gt;
+# 回滚到指定commitID
+git checkout &lt;commitID&gt; &lt;filename&gt;
+</code></pre></li>
+<li><p>删除最后一次远程提交</p>
+<pre><code># 使用revert
+git revert HEAD
+git push origin master
+# 使用reset
+git reset --hard HEAD^
+git push origin master -f
+# revert是放弃指定提交的修改，但是会生成一次新的提交，需要填写提交注释，以前的历史记录都在；
+# reset是指将HEAD指针指到指定提交，历史记录中不会出现放弃的提交记录。
+</code></pre></li>
+<li><p>回滚某次提交</p>
+<pre><code># 找到要回滚的commitID
+git log
+git revert commitID
+</code></pre></li>
+<li><p>分支合并</p>
+<pre><code>git checkout master
+git merge dev
+# 若有冲突，则处理冲突完毕后git add, git commit提交
+git push
+</code></pre></li>
+<li><p>建议线上版本以tag的方式进行保存，而不是一个分支，分支更新如果出错就会回滚，而用tag就可以直接切换，方便快捷。</p>
+</li>
+</ol>
+</div><div class="tags"><a href="/tags/工具/">工具</a></div><div class="post-share"><div class="bdsharebuttonbox"><span style="float:left;line-height: 28px;height: 28px;font-size:16px;font-weight:blod">分享到：</span><a href="#" data-cmd="more" class="bds_more"></a><a href="#" data-cmd="mshare" title="分享到一键分享" class="bds_mshare"></a><a href="#" data-cmd="fbook" title="分享到Facebook" class="bds_fbook"></a><a href="#" data-cmd="twi" title="分享到Twitter" class="bds_twi"></a><a href="#" data-cmd="linkedin" title="分享到linkedin" class="bds_linkedin"></a><a href="#" data-cmd="youdao" title="分享到有道云笔记" class="bds_youdao"></a><a href="#" data-cmd="evernotecn" title="分享到印象笔记" class="bds_evernotecn"></a><a href="#" data-cmd="weixin" title="分享到微信" class="bds_weixin"></a><a href="#" data-cmd="qzone" title="分享到QQ空间" class="bds_qzone"></a><a href="#" data-cmd="tsina" title="分享到新浪微博" class="bds_tsina"></a></div></div><div class="post-nav"><a href="/2020/05/23/CORS跨域与Express实现/" class="next">CORS跨域与Express实现</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">文章目录</i></div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Git常见使用"><span class="toc-text">Git常见使用</span></a></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2020/06/18/git/">Git使用</a></li><li class="post-list-item"><a class="post-list-link" href="/2020/05/23/CORS跨域与Express实现/">CORS跨域与Express实现</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/css单位/">css长度单位</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/09/16/CSS3实现3D旋转/">CSS3实现3D旋转</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue-router/">vue-router简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/08/03/vue/">Vue简介</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/02/移动端HTML适配/">移动端HTML适配</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/js工具函数/">JS常用工具函数</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/02/01/css-reset/">css-reset</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/01/05/koa/">Koa2使用简介</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-gui"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/css/">css</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/html/">html</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/js/">js</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/node/">node</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/其他/">其他</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具使用/">工具使用</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/技巧/">技巧</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语法/">语法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/语言/">语言</a><span class="category-list-count">1</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> 标签</i></div><div class="tagcloud"><a href="/tags/hexo/" style="font-size: 15px;">hexo</a> <a href="/tags/node/" style="font-size: 15px;">node</a> <a href="/tags/css3/" style="font-size: 15px;">css3</a> <a href="/tags/es6/" style="font-size: 15px;">es6</a> <a href="/tags/md/" style="font-size: 15px;">md</a> <a href="/tags/js/" style="font-size: 15px;">js</a> <a href="/tags/ts/" style="font-size: 15px;">ts</a> <a href="/tags/工具/" style="font-size: 15px;">工具</a> <a href="/tags/css/" style="font-size: 15px;">css</a> <a href="/tags/vue/" style="font-size: 15px;">vue</a> <a href="/tags/cdn/" style="font-size: 15px;">cdn</a> <a href="/tags/其他/" style="font-size: 15px;">其他</a> <a href="/tags/html/" style="font-size: 15px;">html</a> <a href="/tags/网络/" style="font-size: 15px;">网络</a> <a href="/tags/笔记/" style="font-size: 15px;">笔记</a> <a href="/tags/redis/" style="font-size: 15px;">redis</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> 归档</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">五月 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">九月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">八月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/02/">二月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">十月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/03/">三月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/02/">二月 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/12/">十二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/10/">十月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/08/">八月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/07/">七月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/06/">六月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/03/">三月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">二月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/01/">一月 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">十二月 2016</a></li></ul></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Baidu Site Haritası</a> |  <a href="/atom.xml">订阅</a> |  <a href="/about/">关于</a></p><p><span> Copyright &copy;<a href="/." rel="nofollow">Nali.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?b8feba972650c12d2536f2cfeb9a72bf";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+  })();
+</script><script type="text/javascript" src="/js/search.json.js?v=2.0.1"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.1" async></script><script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":["mshare","weixin","tsina","qzone","linkedin","fbook","twi","print","renren","sqq","evernotecn","bdysc","tqq","tqf","bdxc","kaixin001","tieba","douban","bdhome","thx","ibaidu","meilishuo","mogujie","diandian","huaban","duitang","hx","fx","youdao","sdo","qingbiji","people","xinhua","mail","isohu","yaolan","wealink","ty","iguba","h163","copy"],"bdPic":"","bdStyle":"1","bdSize":"16"},"share":{},"image":{"viewList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["tsina","qzone","weixin","fbook","twi","linkedin","youdao","evernotecn","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||head).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+</script></body></html>
